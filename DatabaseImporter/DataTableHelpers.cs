@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace fileTest
+namespace DatabaseImporter
 {
     public static class DataTableHelpers
     {
@@ -28,6 +28,42 @@ namespace fileTest
                 if(fields.Length != 9)
                 {
                     throw new InvalidDataException($"{fields.Length} fields were detected, not 9");
+                }
+                else if (fields[0].Length > 12)
+                {
+                    throw new InvalidDataException("");
+                }
+                else if (fields[1].Length > 12)
+                {
+                    throw new InvalidDataException("");
+                }
+                else if (fields[2].Length > 255)
+                {
+                    throw new InvalidDataException("");
+                }
+                else if (fields[3].Length > 255)
+                {
+                    throw new InvalidDataException("");
+                }
+                else if (fields[4].Length > 2)
+                {
+                    throw new InvalidDataException("");
+                }
+                else if (fields[5].Length > 4)
+                {
+                    throw new InvalidDataException("");
+                }
+                else if (fields[6].Length > 4)
+                {
+                    throw new InvalidDataException("");
+                }
+                else if (fields[7].Length > 6)
+                {
+                    throw new InvalidDataException("");
+                }
+                else if (fields[8].Length > 100)
+                {
+                    throw new InvalidDataException("");
                 }
                 dr["tconst"] = fields[0];
                 dr["titleType"] = fields[1];

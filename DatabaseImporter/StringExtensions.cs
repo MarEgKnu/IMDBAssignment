@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace fileTest
+namespace DatabaseImporter
 {
     public static class StringExtensions
     {

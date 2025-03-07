@@ -1,22 +1,42 @@
-﻿using fileTest;
+﻿using DatabaseImporter;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Net.Sockets;
 
 
 
-GC.TryStartNoGCRegion(8000000000);
+//GC.TryStartNoGCRegion(8000000000);
+
+int divisor = 10;
+
+
 
 using(SqlConnection conn = new SqlConnection(Secret.ConnectionString))
 {
     TitlesInserter titlesInserter = new TitlesInserter();
     conn.Open();
-    using (StreamReader sr = File.OpenText("C:\\Users\\Marius\\Downloads\\title.basics.tsv\\title.basics.tsv"))
+    string[] lines = File.ReadAllLines("C:\\Users\\Marius\\Downloads\\title.basics.tsv\\title.basics.tsv").Skip(1).ToArray();
+    int itemsPerSegment = lines.Length / divisor;
+    int extraItems = lines.Length % divisor;
+    for (int i = 0; i < divisor; i++)
     {
-        sr.ReadLine();
-        titlesInserter.InsertBulk(DataTableHelpers.CreateDataTableTitles(sr), conn);
-        GC.EndNoGCRegion();
+        ArraySegment<string> segment;
+        if (i == 0)
+        {
+            segment = new ArraySegment<string>(lines, 0, itemsPerSegment);
+        }
+        else if (i == divisor - 1)
+        {
+            segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment + extraItems);
+        }
+        else
+        {
+            segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment);
+        }
+        titlesInserter.InsertBulk(DataTableHelpers.CreateDataTableTitles(segment), conn);
     }
+        //GC.EndNoGCRegion();
+    
 
 }
 

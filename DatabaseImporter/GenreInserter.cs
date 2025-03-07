@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace fileTest
+namespace DatabaseImporter
 {
     public class GenreInserter : DatabaseInserter
     {
@@ -51,6 +51,11 @@ namespace fileTest
                 writtenGenres.Add(genres[i]);
 
             }
+        }
+
+        public override void Start(string filePath, InsertMode insertMode)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace fileTest
+namespace DatabaseImporter
 {
     public abstract class DatabaseInserter
     {
+        public abstract void Start(string filePath, InsertMode insertMode);
         public void InsertMany(string[] lines, SqlConnection connection)
         {
             for(int i = 1; i < lines.Length; i++)

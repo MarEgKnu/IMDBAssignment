@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace fileTest
+namespace DatabaseImporter
 {
     public class TitleTypeInserter : DatabaseInserter
     {
@@ -41,6 +41,11 @@ namespace fileTest
             cmd.Parameters.Add(name);
             cmd.ExecuteNonQuery();
             writtenTitleTypes.Add(line[1]);
+        }
+
+        public override void Start(string filePath, InsertMode insertMode)
+        {
+            throw new NotImplementedException();
         }
     }
 }
