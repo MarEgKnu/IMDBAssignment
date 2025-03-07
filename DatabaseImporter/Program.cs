@@ -120,7 +120,7 @@ using (SqlConnection connection = new SqlConnection(Secret.ConnectionString))
             Direction = ParameterDirection.Input,
             Value = isAdultBool
         };
-        ushort? startYearValue = fields[5].ToUshortOrNull();
+        ushort? startYearValue = fields[5].ToShortOrNull();
         SqlParameter startYear = new()
         {
             ParameterName = "@StartYear",
@@ -128,7 +128,7 @@ using (SqlConnection connection = new SqlConnection(Secret.ConnectionString))
             Direction = ParameterDirection.Input,
             Value = (startYearValue is null) ? DBNull.Value : startYearValue
         };
-        ushort? endYearValue = fields[6].ToUshortOrNull();
+        ushort? endYearValue = fields[6].ToShortOrNull();
         SqlParameter endYear = new()
         {
             ParameterName = "@EndYear",
