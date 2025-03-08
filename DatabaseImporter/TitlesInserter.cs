@@ -10,11 +10,11 @@ namespace DatabaseImporter
 {
     internal class TitlesInserter : DatabaseInserter
     {
-        const int DIVISOR = 1000000;
+        const int DIVISOR = 1000;
         public override void InsertBulk(DataTable records, SqlConnection connection)
         {
-            SqlCommand cmd = new SqlCommand("InsertTitlesBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300};
-            SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawTitleData", Value = records};
+            SqlCommand cmd = new SqlCommand("InsertTitlesBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300 };
+            SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawTitleData", Value = records, SqlValue = records};
             cmd.Parameters.Add(param);
             cmd.ExecuteNonQuery();
         }

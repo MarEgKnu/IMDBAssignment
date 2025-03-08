@@ -16,10 +16,10 @@ namespace DatabaseImporter
             dt.Columns.Add("titleType", typeof(string));
             dt.Columns.Add("primaryTitle", typeof(string));
             dt.Columns.Add("originalTitle", typeof(string));
-            dt.Columns.Add("isAdult", typeof(bool));
-            dt.Columns.Add("startYear", typeof(Int16));
-            dt.Columns.Add("endYear", typeof(Int16));
-            dt.Columns.Add("runTimeMinutes", typeof(Int32));
+            dt.Columns.Add("isAdult", typeof(string));
+            dt.Columns.Add("startYear", typeof(string));
+            dt.Columns.Add("endYear", typeof(string));
+            dt.Columns.Add("runTimeMinutes", typeof(string));
             dt.Columns.Add("genres", typeof(string));
             foreach (string line in lines)
             {
@@ -27,14 +27,14 @@ namespace DatabaseImporter
                 string[] fields = line.Split('\t');
                 ValidateTitleFields(fields);
                 dr["tconst"] = fields[0];
-                dr["titleType"] = fields[1];        
-                dr["primaryTitle"] = (fields[2].IsNullString()) ? DBNull.Value : fields[2];
-                dr["originalTitle"] = (fields[3].IsNullString()) ? DBNull.Value : fields[2];
-                dr["isAdult"] = fields[4].ToBoolOrDBNull();
-                dr["startYear"] = fields[5].ToShortOrDBNull();
-                dr["endYear"] = fields[6].ToShortOrDBNull();
-                dr["runTimeMinutes"] = fields[7].ToIntOrDBNull();
-                dr["genres"] = (fields[8].IsNullString()) ? DBNull.Value : fields[8];
+                dr["titleType"] = fields[1];
+                dr["primaryTitle"] = fields[2];
+                dr["originalTitle"] = fields[3];
+                dr["isAdult"] = fields[4];
+                dr["startYear"] = fields[5];
+                dr["endYear"] = fields[6];
+                dr["runTimeMinutes"] = fields[7];
+                dr["genres"] = fields[8];
                 dt.Rows.Add(dr);
 
             }
@@ -47,10 +47,10 @@ namespace DatabaseImporter
             dt.Columns.Add("titleType", typeof(string));
             dt.Columns.Add("primaryTitle", typeof(string));
             dt.Columns.Add("originalTitle", typeof(string));
-            dt.Columns.Add("isAdult", typeof(bool));
-            dt.Columns.Add("startYear", typeof(Int16));
-            dt.Columns.Add("endYear", typeof(Int16));
-            dt.Columns.Add("runTimeMinutes", typeof(Int32));
+            dt.Columns.Add("isAdult", typeof(string));
+            dt.Columns.Add("startYear", typeof(string));
+            dt.Columns.Add("endYear", typeof(string));
+            dt.Columns.Add("runTimeMinutes", typeof(string));
             dt.Columns.Add("genres", typeof(string));
             while (!sr.EndOfStream)
             {
@@ -60,13 +60,13 @@ namespace DatabaseImporter
                 ValidateTitleFields(fields);
                 dr["tconst"] = fields[0];
                 dr["titleType"] = fields[1];
-                dr["primaryTitle"] = (fields[2].IsNullString()) ? DBNull.Value : fields[2];
-                dr["originalTitle"] = (fields[3].IsNullString()) ? DBNull.Value : fields[2];
-                dr["isAdult"] = fields[4].ToBoolOrDBNull();
-                dr["startYear"] = fields[5].ToShortOrDBNull();
-                dr["endYear"] = fields[6].ToShortOrDBNull();
-                dr["runTimeMinutes"] = fields[7].ToIntOrDBNull();
-                dr["genres"] = (fields[8].IsNullString()) ? DBNull.Value : fields[8];
+                dr["primaryTitle"] = fields[2];
+                dr["originalTitle"] = fields[3];
+                dr["isAdult"] = fields[4];
+                dr["startYear"] = fields[5];
+                dr["endYear"] = fields[6];
+                dr["runTimeMinutes"] = fields[7];
+                dr["genres"] = fields[8];
                 dt.Rows.Add(dr);
 
             }
@@ -91,6 +91,22 @@ namespace DatabaseImporter
                 throw new InvalidDataException("");
             }
             else if (fields[3].Length > 500)
+            {
+                throw new InvalidDataException("");
+            }
+            else if (fields[4].Length > 2)
+            {
+                throw new InvalidDataException("");
+            }
+            else if (fields[5].Length > 4)
+            {
+                throw new InvalidDataException("");
+            }
+            else if (fields[6].Length > 4)
+            {
+                throw new InvalidDataException("");
+            }
+            else if (fields[7].Length > 6)
             {
                 throw new InvalidDataException("");
             }
