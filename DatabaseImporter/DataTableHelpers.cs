@@ -17,9 +17,9 @@ namespace DatabaseImporter
             dt.Columns.Add("primaryTitle", typeof(string));
             dt.Columns.Add("originalTitle", typeof(string));
             dt.Columns.Add("isAdult", typeof(bool));
-            dt.Columns.Add("startYear", typeof(short?));
-            dt.Columns.Add("endYear", typeof(short?));
-            dt.Columns.Add("runTimeMinutes", typeof(int?));
+            dt.Columns.Add("startYear", typeof(Int16));
+            dt.Columns.Add("endYear", typeof(Int16));
+            dt.Columns.Add("runTimeMinutes", typeof(Int32));
             dt.Columns.Add("genres", typeof(string));
             foreach (string line in lines)
             {
@@ -43,14 +43,14 @@ namespace DatabaseImporter
         public static DataTable CreateDataTableTitles(StreamReader sr)
         {
             DataTable dt = new DataTable();
-            t.Columns.Add("tconst", typeof(string));
+            dt.Columns.Add("tconst", typeof(string));
             dt.Columns.Add("titleType", typeof(string));
             dt.Columns.Add("primaryTitle", typeof(string));
             dt.Columns.Add("originalTitle", typeof(string));
             dt.Columns.Add("isAdult", typeof(bool));
-            dt.Columns.Add("startYear", typeof(short?));
-            dt.Columns.Add("endYear", typeof(short?));
-            dt.Columns.Add("runTimeMinutes", typeof(int?));
+            dt.Columns.Add("startYear", typeof(Int16));
+            dt.Columns.Add("endYear", typeof(Int16));
+            dt.Columns.Add("runTimeMinutes", typeof(Int32));
             dt.Columns.Add("genres", typeof(string));
             while (!sr.EndOfStream)
             {
