@@ -80,39 +80,39 @@ namespace DatabaseImporter
             }
             else if (fields[0].Length > 12)
             {
-                throw new InvalidDataException("");
+                throw new InvalidDataException($"tconst field {fields[0]} was longer than 12 characters long");
             }
             else if (fields[1].Length > 12)
             {
-                throw new InvalidDataException("");
+                throw new InvalidDataException($"titleType field {fields[1]} was longer than 12 characters long");
             }
             else if (fields[2].Length > 500)
             {
-                throw new InvalidDataException("");
+                throw new InvalidDataException($"primaryTitle field {fields[2]} was longer than 500 characters long");
             }
             else if (fields[3].Length > 500)
             {
-                throw new InvalidDataException("");
+                throw new InvalidDataException($"originalTitle field {fields[3]} was longer than 500 characters long");
             }
             else if (fields[4].Length > 2)
             {
-                throw new InvalidDataException("");
+                throw new InvalidDataException($"isAdult field {fields[4]} was longer than 2 characters long");
             }
             else if (fields[5].Length > 4)
             {
-                throw new InvalidDataException("");
+                throw new InvalidDataException($"startYear field {fields[5]} was longer than 4 characters long");
             }
             else if (fields[6].Length > 4)
             {
-                throw new InvalidDataException("");
+                throw new InvalidDataException($"endYear field {fields[6]} was longer than 4 characters long");
             }
-            else if (fields[7].Length > 6)
+            else if (fields[7].Length > 8)
             {
-                throw new InvalidDataException("");
+                throw new InvalidDataException($"runTimeMinutes field {fields[7]} was longer than 8 characters long");
             }
             else if (fields[8].Length > 100)
             {
-                throw new InvalidDataException("");
+                throw new InvalidDataException($"Genres field {fields[8]} was longer than 100 characters long");
             }
         }
     }
