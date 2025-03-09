@@ -5,8 +5,12 @@ using System.Net.Sockets;
 
 
 DatabaseInserter titlesInserter = new TitlesInserter();
+using(SqlConnection connection = new SqlConnection(Secret.ConnectionString))
+{
+    connection.Open();
+    titlesInserter.Insert("C:\\Users\\Marius\\Downloads\\title.basics.tsv\\title.basics.tsv", connection);
+}
 
-titlesInserter.Start("C:\\Users\\Marius\\Downloads\\title.basics.tsv\\title.basics.tsv", InsertMode.InsertBulk);
 
 
 

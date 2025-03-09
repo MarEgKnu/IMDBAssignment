@@ -13,49 +13,47 @@ namespace DatabaseImporter
     {
         HashSet<string> writtenGenres = new HashSet<string>();
 
-        public override void InsertBulk(DataTable records, SqlConnection connection)
-        {
-            throw new NotImplementedException();
-        }
 
-        public override void InsertOne(string[] line, SqlConnection connection)
+
+        public override void Insert(string filePath, SqlConnection connection)
         {
-            if(line.Length != 9)
+            string[] lines = File.ReadAllLines(filePath).Skip(1).ToArray();
+            foreach (var line in lines)
             {
-                throw new InvalidDataException($"line: {string.Join("\t", line)} only has {line.Length} values");
-            }
-            else if (line[8] == @"\N")
-            {
-                return;
-            }
-            string[] genres = line[8].Split(',');
-            for( int i = 0; i < genres.Length; i++)
-            {
-                if(writtenGenres.Contains(genres[i]))
+                string[] fields = line.Split("\t");
+
+                if (fields.Length != 9)
                 {
-                    continue;
+                    throw new InvalidDataException($"line: {string.Join("\t", fields)} only has {fields.Length} values");
                 }
-
-                SqlCommand cmd = new SqlCommand("InsertGenre", connection);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                SqlParameter names = new()
+                else if (fields[8] == @"\N")
                 {
-                    ParameterName = "@Name",
-                    SqlDbType = SqlDbType.VarChar,
-                    Size = 50,
-                    Direction = ParameterDirection.Input,
-                    Value = genres[i]
-                };
-                cmd.Parameters.Add(names);
-                cmd.ExecuteNonQuery();
-                writtenGenres.Add(genres[i]);
+                    return;
+                }
+                string[] genres = fields[8].Split(',');
+                for (int i = 0; i < genres.Length; i++)
+                {
+                    if (writtenGenres.Contains(genres[i]))
+                    {
+                        continue;
+                    }
 
+                    SqlCommand cmd = new SqlCommand("InsertGenre", connection);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    SqlParameter names = new()
+                    {
+                        ParameterName = "@Name",
+                        SqlDbType = SqlDbType.VarChar,
+                        Size = 50,
+                        Direction = ParameterDirection.Input,
+                        Value = genres[i]
+                    };
+                    cmd.Parameters.Add(names);
+                    cmd.ExecuteNonQuery();
+                    writtenGenres.Add(genres[i]);
+
+                }
             }
-        }
-
-        public override void Start(string filePath, InsertMode insertMode)
-        {
-            throw new NotImplementedException();
         }
     }
 }
