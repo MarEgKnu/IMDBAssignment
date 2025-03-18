@@ -11,6 +11,45 @@ namespace DatabaseImporter
 {
     public class PeopleInserter : DatabaseInserter
     {
+        private object _isCmdReadyForSegmentLock = new object();
+        private object _isSegmentReadyForCmdLock = new object();
+        private bool _isSegmentReadyForCmd = false;
+        private bool IsSegmentReadyForCmd { 
+            get 
+            {
+                lock (_isSegmentReadyForCmdLock)
+                {
+                    return _isSegmentReadyForCmd;
+                }
+            }
+            set
+            {
+                lock (_isSegmentReadyForCmdLock)
+                {
+                    _isSegmentReadyForCmd = value;
+                }
+            }
+        
+        }
+        private bool _isCmdReadyForSegment = false;
+        private bool IsCmdReadyForSegment
+        {
+            get
+            {
+                lock (_isCmdReadyForSegmentLock)
+                {
+                    return _isCmdReadyForSegment;
+                }
+            }
+            set
+            {
+                lock (_isCmdReadyForSegmentLock)
+                {
+                    _isCmdReadyForSegment = value;
+                }
+            }
+
+        }
         const int INITIAL_CAPACITY = 14211906; //How much list capacity to allocate to start with
         const int NCONST_MAX_SIZE = 12;
         const int PRIMARY_NAME_MAX_SIZE = 70;
@@ -18,6 +57,7 @@ namespace DatabaseImporter
         const int PRIMARY_PROF_MAX_SIZE = 75;
         const int KNOWN_FOR_TITLES_MAX_SIZE = 48;
         const int DIVISOR = 1000;
+        private IEnumerable<SqlDataRecord> _records = null;
         private static SqlMetaData[] _peopleMetaData = new SqlMetaData[]
         {
             new SqlMetaData("nconst", System.Data.SqlDbType.VarChar, NCONST_MAX_SIZE),
@@ -31,39 +71,80 @@ namespace DatabaseImporter
         public override void Insert(string filePath, SqlConnection connection)
         {
             //SqlDataRecord[] lines = CreateDataRecordsPeople(File.ReadAllLines(filePath)).ToArray();
-            string[] lines = File.ReadAllLines(filePath);
+            string[] lines = File.ReadAllLines(filePath).Skip(1).ToArray();
             int itemsPerSegment = lines.Length / DIVISOR;
             int extraItems = lines.Length % DIVISOR;
-            for (int i = 0; i < DIVISOR; i++)
+            Task creatingSegments = Task.Run(() =>
             {
-                ArraySegment<string> segment;
-                if (i == 0)
+                //while(IsSegmentReadyForCmd)
+                //{
+                    for (int i = 0; i < DIVISOR; i++)
+                    {
+                        ArraySegment<string> segment;
+                        if (i == 0)
+                        {
+                            segment = new ArraySegment<string>(lines, 0, itemsPerSegment);
+                        }
+                        else if (i == DIVISOR - 1)
+                        {
+                            segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment + extraItems);
+                        }
+                        else
+                        {
+                            segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment);
+                        }
+                        IEnumerable<SqlDataRecord> tempRecords = CreateDataRecordsPeople(segment);
+                        while(!IsCmdReadyForSegment)
+                        {
+                            Thread.Sleep(5); // sleep short amount of time    
+                        }
+                        lock(this)
+                        {
+                            // once it is ready, stop the waiting and pass the records to the main variable
+                            _records = tempRecords;
+                            IsSegmentReadyForCmd = true;
+                        }
+                        
+                    }
+                //}
+                
+            });
+            Task runCommand = Task.Run(() =>
+            {
+                IsCmdReadyForSegment = true;
+                while(!creatingSegments.IsCompleted || _records != null)
                 {
-                    segment = new ArraySegment<string>(lines, 0, itemsPerSegment);
+                    lock(this)
+                    {
+                        if (IsSegmentReadyForCmd)
+                        {
+                            IsCmdReadyForSegment = false;
+                            SqlCommand cmd = new SqlCommand("InsertPeopleBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300 };
+                            SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPeopleData", Value = _records };
+                            cmd.Parameters.Add(param);
+                            cmd.ExecuteNonQuery();
+                            _records = null;
+                            IsSegmentReadyForCmd = false;
+                            IsCmdReadyForSegment = true;
+                        }
+                    }
+                    
+                    
                 }
-                else if (i == DIVISOR - 1)
-                {
-                    segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment + extraItems);
-                }
-                else
-                {
-                    segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment);
-                }
-                SqlCommand cmd = new SqlCommand("InsertTitlesBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300 };
-                SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawTitleData", Value = lines };
-                cmd.Parameters.Add(param);
-                cmd.ExecuteNonQuery();
-            }
+                
+            });
+            Task.WaitAll(creatingSegments, runCommand);
         }
 
 
-        
-        public static IEnumerable<SqlDataRecord> CreateDataRecordsPeople(string[] lines)
+
+        private static IEnumerable<SqlDataRecord> CreateDataRecordsPeople(IEnumerable<string> lines)
         {
-            List<SqlDataRecord> records = new List<SqlDataRecord>(INITIAL_CAPACITY);
-            for(int i = 1; i < lines.Length;i++) // start at 1 to skip the first
+            List<SqlDataRecord> records = new List<SqlDataRecord>();
+            foreach (string line in lines)
             {
-                string[] fields = lines[i].Split('\t');
+                
+                string[] fields = line.Split('\t');
                 ValidatePeopleFields(fields);
                 SqlDataRecord record = new SqlDataRecord(_peopleMetaData);
                 record.SetString(0, fields[0]);
@@ -75,7 +156,6 @@ namespace DatabaseImporter
                 records.Add(record);
             }
             return records;
-
         }
 
 
