@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 DatabaseInserter titlesInserter = new TitlesInserter();
 DatabaseInserter profInserter = new ProfessionInserter();
-DatabaseInserter pplInserter = new PeopleInserter();
+DatabaseInserter pplInserter = new PeopleInserterSingleThread();
 using(SqlConnection connection = new SqlConnection(Secret.ConnectionString))
 {
     connection.Open();

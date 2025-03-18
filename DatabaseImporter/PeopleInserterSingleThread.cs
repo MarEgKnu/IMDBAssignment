@@ -2,20 +2,21 @@
 using Microsoft.Data.SqlClient.Server;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DatabaseImporter
 {
-    public static class DataRecordHelpers
+    public class PeopleInserterSingleThread : DatabaseInserter
     {
-        const int INITIAL_CAPACITY = 14211906; //How much list capacity to allocate to start with
         const int NCONST_MAX_SIZE = 12;
         const int PRIMARY_NAME_MAX_SIZE = 70;
         const int YEAR_MAX_SIZE = 4;
         const int PRIMARY_PROF_MAX_SIZE = 75;
         const int KNOWN_FOR_TITLES_MAX_SIZE = 48;
+        const int DIVISOR = 1000;
         private static SqlMetaData[] _peopleMetaData = new SqlMetaData[]
         {
             new SqlMetaData("nconst", System.Data.SqlDbType.VarChar, NCONST_MAX_SIZE),
@@ -26,13 +27,40 @@ namespace DatabaseImporter
             new SqlMetaData("knownForTitles", System.Data.SqlDbType.VarChar, KNOWN_FOR_TITLES_MAX_SIZE),
 
         };
-        public static IEnumerable<SqlDataRecord> CreateDataRecordsPeople(StreamReader sr)
+        public override void Insert(string filePath, SqlConnection connection)
         {
-            sr.ReadLine(); // read the first line as it is useless
-            List<SqlDataRecord> records = new List<SqlDataRecord>(INITIAL_CAPACITY);
-            while (!sr.EndOfStream)
+            string[] lines = File.ReadAllLines(filePath).Skip(1).ToArray();
+            int itemsPerSegment = lines.Length / DIVISOR;
+            int extraItems = lines.Length % DIVISOR;
+            for (int i = 0; i < DIVISOR; i++)
             {
-                string[] fields = sr.ReadLine().Split('\t');
+                ArraySegment<string> segment;
+                if (i == 0)
+                {
+                    segment = new ArraySegment<string>(lines, 0, itemsPerSegment);
+                }
+                else if (i == DIVISOR - 1)
+                {
+                    segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment + extraItems);
+                }
+                else
+                {
+                    segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment);
+                }
+                SqlCommand cmd = new SqlCommand("InsertPeopleBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300 };
+                SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPeopleData", Value = CreateDataTablePeople(segment) };
+                cmd.Parameters.Add(param);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static IEnumerable<SqlDataRecord> CreateDataRecordsPeople(IEnumerable<string> lines)
+        {
+            List<SqlDataRecord> records = new List<SqlDataRecord>();
+            foreach (string line in lines)
+            {
+
+                string[] fields = line.Split('\t');
                 ValidatePeopleFields(fields);
                 SqlDataRecord record = new SqlDataRecord(_peopleMetaData);
                 record.SetString(0, fields[0]);
@@ -44,10 +72,34 @@ namespace DatabaseImporter
                 records.Add(record);
             }
             return records;
-
         }
 
 
+        private static DataTable CreateDataTablePeople(IEnumerable<string> lines)
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("nconst", typeof(string));
+            dt.Columns.Add("primaryName", typeof(string));
+            dt.Columns.Add("birthYear", typeof(string));
+            dt.Columns.Add("deathYear", typeof(string));
+            dt.Columns.Add("primaryProfession", typeof(string));
+            dt.Columns.Add("knownForTitles", typeof(string));
+            foreach (string line in lines)
+            {
+                DataRow dr = dt.NewRow();
+                string[] fields = line.Split('\t');
+                ValidatePeopleFields(fields);
+                dr[0] = fields[0];
+                dr[1] = fields[1];
+                dr[2] = fields[2];
+                dr[3] = fields[3];
+                dr[4] = fields[4];
+                dr[5] = fields[5];
+                dt.Rows.Add(dr);
+
+            }
+            return dt;
+        }
 
 
         private static void ValidatePeopleFields(string[] fields)
