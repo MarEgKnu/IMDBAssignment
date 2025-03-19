@@ -14,9 +14,9 @@ namespace DatabaseImporter
         public override void Insert(string filePath, SqlConnection connection)
         {
             string[] lines = File.ReadAllLines(filePath).Skip(1).ToArray();
-            foreach (var line in lines)
+            for(int lineNum = 0;  lineNum < lines.Length; lineNum++)
             {
-                string[] fields = line.Split("\t");
+                string[] fields = lines[lineNum].Split("\t");
 
                 if (fields.Length != 6)
                 {
@@ -24,7 +24,7 @@ namespace DatabaseImporter
                 }
                 else if (fields[4] == @"\N")
                 {
-                    return;
+                    continue;
                 }
                 string[] professions = fields[4].Split(',');
                 for (int i = 0; i < professions.Length; i++)
