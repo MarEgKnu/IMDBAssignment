@@ -15,10 +15,11 @@ namespace DatabaseImporter
     }
     public class PrincipalsTSVValidator : DBFileValidator
     {
-        private string[] fieldNames = new string[6] { "tconst", "ordering", "nconst", "category", "job", "characters" };
-        private Types[] fieldTypes = new Types[6] { Types.String, Types.Number, Types.String, Types.String, Types.String | Types.Nullable, Types.String | Types.Nullable };
-        private bool[] fieldNullabillity = new bool[6];
-        private object[] largestFieldValues = new object[6];
+        const int NUM_OF_FIELDS = 6;
+        private string[] fieldNames = new string[NUM_OF_FIELDS] { "tconst", "ordering", "nconst", "category", "job", "characters" };
+        private Types[] fieldTypes = new Types[NUM_OF_FIELDS] { Types.String, Types.Number, Types.String, Types.String, Types.String | Types.Nullable, Types.String | Types.Nullable };
+        private bool[] fieldNullabillity = new bool[NUM_OF_FIELDS];
+        private object[] largestFieldValues = new object[NUM_OF_FIELDS];
 
         public PrincipalsTSVValidator()
         {
@@ -86,6 +87,17 @@ namespace DatabaseImporter
                     }
                 }
       
+            }
+            for(int fieldNum = 0; fieldNum < NUM_OF_FIELDS; fieldNum++)
+            {
+                if (fieldTypes[fieldNum].HasFlag(Types.String))
+                {
+                    Console.WriteLine($"Field {fieldNames[fieldNum]} longest word is {largestFieldValues[fieldNum]}, and Nullable = {fieldNullabillity[fieldNum]}");
+                }                 
+                else
+                {
+                    Console.WriteLine($"Field {fieldNames[fieldNum]} largest number is {largestFieldValues[fieldNum]}, and Nullable = {fieldNullabillity[fieldNum]}");
+                }
             }
         }
     }
