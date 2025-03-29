@@ -7,12 +7,16 @@ using System.Net.Sockets;
 DatabaseInserter titlesInserter = new TitlesInserter();
 DatabaseInserter profInserter = new ProfessionInserter();
 DatabaseInserter pplInserter = new PeopleInserterSingleThread();
+DBFileValidator principalsValidator = new PrincipalsTSVValidator();
 using(SqlConnection connection = new SqlConnection(Secret.ConnectionString))
 {
     connection.Open();
+    principalsValidator.Validate("C:\\Users\\Marius\\Downloads\\title.principals.tsv\\title.principals.tsv");
     //pplInserter.Insert("C:\\Users\\Marius\\Downloads\\name.basics.tsv\\name.basics.tsv", connection);
+
+
     //titlesInserter.Insert("C:\\Users\\Marius\\Downloads\\title.basics.tsv\\title.basics.tsv", connection);
-    profInserter.Insert("C:\\Users\\Marius\\Downloads\\name.basics.tsv\\name.basics.tsv", connection);
+    //profInserter.Insert("C:\\Users\\Marius\\Downloads\\name.basics.tsv\\name.basics.tsv", connection);
 
 }
 

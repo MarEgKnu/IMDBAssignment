@@ -12,7 +12,7 @@ namespace DatabaseImporter
     public class PeopleInserterSingleThread : DatabaseInserter
     {
         const int NCONST_MAX_SIZE = 12;
-        const int PRIMARY_NAME_MAX_SIZE = 70;
+        const int PRIMARY_NAME_MAX_SIZE = 120;
         const int YEAR_MAX_SIZE = 4;
         const int PRIMARY_PROF_MAX_SIZE = 75;
         const int KNOWN_FOR_TITLES_MAX_SIZE = 48;
