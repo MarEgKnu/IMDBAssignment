@@ -37,10 +37,13 @@ namespace DatabaseImporter
         }
         public override void Validate(string filePath)
         {
-            string[] lines = File.ReadAllLines(filePath).Skip(1).ToArray();
-            for (int lineNum = 0; lineNum < lines.Length; lineNum++)
+            int lineNum = 1;
+            IEnumerable<string> lines = File.ReadLines(filePath).Skip(1);
+            //string[] lines = File.ReadAllLines(filePath).Skip(1).ToArray();
+            foreach(string line in lines)
             {
-                string[] fields = lines[lineNum].Split("\t");
+                lineNum++;
+                string[] fields = line.Split("\t");
 
                 if (fields.Length != 6)
                 {
@@ -60,7 +63,7 @@ namespace DatabaseImporter
                         if (!fieldNullabillity[fieldNum] && fields[fieldNum] == @"\N")
                         {
                             fieldNullabillity[fieldNum] = true;
-                            Console.WriteLine($"data for {fieldNames[fieldNum]} was able to be null on line {lineNum}, data: {lines[lineNum]}");
+                            Console.WriteLine($"data for {fieldNames[fieldNum]} was able to be null on line {lineNum}, data: {line}");
                         }
                     }
                     // numbers
@@ -70,7 +73,7 @@ namespace DatabaseImporter
                         if (!fieldNullabillity[fieldNum] && fields[fieldNum] == @"\N")
                         {
                             fieldNullabillity[fieldNum] = true;
-                            Console.WriteLine($"data for {fieldNames[fieldNum]} was able to be null on line {lineNum}, data: {lines[lineNum]}");
+                            Console.WriteLine($"data for {fieldNames[fieldNum]} was able to be null on line {lineNum}, data: {line}");
                         }
                         // check if its the longest, and if it is even parseable to an int
                         else if (int.TryParse(fields[fieldNum], out int result))
@@ -82,7 +85,7 @@ namespace DatabaseImporter
                         }
                         else
                         {
-                            Console.WriteLine($"{fieldNames[fieldNum]} data on line {lineNum} could not be parsed to int, data: {lines[lineNum]}");
+                            Console.WriteLine($"{fieldNames[fieldNum]} data on line {lineNum} could not be parsed to int, data: {line}");
                         }
                     }
                 }
@@ -92,11 +95,11 @@ namespace DatabaseImporter
             {
                 if (fieldTypes[fieldNum].HasFlag(Types.String))
                 {
-                    Console.WriteLine($"Field {fieldNames[fieldNum]} longest word is {largestFieldValues[fieldNum]}, and Nullable = {fieldNullabillity[fieldNum]}");
+                    Console.WriteLine($"Field {fieldNames[fieldNum]} longest word is {largestFieldValues[fieldNum]} with {largestFieldValues[fieldNum].ToString().Length} characters, and Nullable = {fieldNullabillity[fieldNum]}\n");
                 }                 
                 else
                 {
-                    Console.WriteLine($"Field {fieldNames[fieldNum]} largest number is {largestFieldValues[fieldNum]}, and Nullable = {fieldNullabillity[fieldNum]}");
+                    Console.WriteLine($"Field {fieldNames[fieldNum]} largest number is {largestFieldValues[fieldNum]}, and Nullable = {fieldNullabillity[fieldNum]}\n");
                 }
             }
         }
