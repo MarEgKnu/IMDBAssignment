@@ -64,6 +64,17 @@ namespace DatabaseImporter
                 return int.Parse(str);
             }
         }
+        public static object ToByteOrDBNull(this string str)
+        {
+            if (str.IsNullString())
+            {
+                return DBNull.Value;
+            }
+            else
+            {
+                return byte.Parse(str);
+            }
+        }
         public static object ToBoolOrDBNull(this string str)
         {
             if (str is null) throw new ArgumentNullException(nameof(str));
