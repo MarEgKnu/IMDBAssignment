@@ -8,19 +8,53 @@ DatabaseInserter titlesInserter = new TitlesInserter();
 DatabaseInserter profInserter = new ProfessionInserter();
 DatabaseInserter pplInserter = new PeopleInserterSingleThread();
 DatabaseInserter catInserter = new CategoryInserter();
+DatabaseInserter principalsInserter = new PrincipalsInserter();
 DBFileValidator principalsValidator = new PrincipalsTSVValidator();
-using(SqlConnection connection = new SqlConnection(Secret.ConnectionString))
+
+Dictionary<string, Action<string, SqlConnection>> cmdOptions = new Dictionary<string, Action<string, SqlConnection>>()
 {
+
+    {"insert titles", titlesInserter.Insert },
+    {"insert professions", profInserter.Insert },
+    {"insert people", pplInserter.Insert },
+    {"insert categories", catInserter.Insert },
+    {"insert principals", principalsInserter.Insert },
+    {"validate principals", (string path, SqlConnection conn) => principalsValidator.Validate(path)},
+};
+
+
+
+using (SqlConnection connection = new SqlConnection(Secret.ConnectionString))
+{
+    bool finished = false;
     connection.Open();
-    Console.WriteLine("Enter path:");
-    string path = Console.ReadLine();
-    catInserter.Insert(path, connection);
-    //principalsValidator.Validate(path);
-    //pplInserter.Insert("C:\\Users\\Marius\\Downloads\\name.basics.tsv\\name.basics.tsv", connection);
-
-
-    //titlesInserter.Insert("C:\\Users\\Marius\\Downloads\\title.basics.tsv\\title.basics.tsv", connection);
-    //profInserter.Insert("C:\\Users\\Marius\\Downloads\\name.basics.tsv\\name.basics.tsv", connection);
+    Console.WriteLine("Enter command option: ");
+    string option = Console.ReadLine();
+    while(!finished)
+    {
+        if (cmdOptions.TryGetValue(option.ToLower(), out var cmd))
+        {
+            while(!finished)
+            {
+                Console.WriteLine("Command accepted, enter path:");
+                string path = Console.ReadLine();
+                if (File.Exists(path))
+                {
+                    cmd(path, connection);
+                    finished = true;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid path, try again");
+                }
+            }
+        
+        }
+        else
+        {
+            Console.WriteLine("Invalid command, try again");
+        }
+    }
 
 }
 
