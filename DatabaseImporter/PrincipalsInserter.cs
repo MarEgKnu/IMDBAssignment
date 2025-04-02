@@ -23,7 +23,7 @@ namespace DatabaseImporter
             new SqlMetaData("tconst", System.Data.SqlDbType.VarChar, TCONST_MAX_SIZE),
             new SqlMetaData("ordering", System.Data.SqlDbType.TinyInt),
             new SqlMetaData("nconst", System.Data.SqlDbType.VarChar, NCONST_MAX_SIZE),
-            new SqlMetaData("category", System.Data.SqlDbType.VarChar, CATEGORY_MAX_SIZE),
+            new SqlMetaData("category", System.Data.SqlDbType.VarChar, ORDERING_MAX_SIZE),
             new SqlMetaData("job", System.Data.SqlDbType.VarChar, JOB_MAX_SIZE),
             new SqlMetaData("characters", System.Data.SqlDbType.VarChar, CHARACTERS_MAX_SIZE),
 
@@ -62,12 +62,12 @@ namespace DatabaseImporter
                     paramBuffer[index].SetString(5, fields[5]);
                 }
 
-                if ((index + 1) % BATCHES == 0)
+                if ((index + 1) % paramBuffer.Length == 0)
                 {
-                    //SqlCommand cmd = new SqlCommand("InsertPeopleBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300 };
-                    ////SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPeopleData", Value = CreateDataTablePeople(segment) };
-                    //cmd.Parameters.Add(param);
-                    //cmd.ExecuteNonQuery();
+                    SqlCommand cmd = new SqlCommand("InsertPrincipalsBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300 };
+                    SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPrincipalData", Value = paramBuffer };
+                    cmd.Parameters.Add(param);
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
