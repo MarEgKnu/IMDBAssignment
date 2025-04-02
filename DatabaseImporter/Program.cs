@@ -30,10 +30,10 @@ using (SqlConnection connection = new SqlConnection(Secret.ConnectionString))
 {
     bool finished = false;
     connection.Open();
-    Console.WriteLine("Enter command option: ");
-    string option = Console.ReadLine();
     while(!finished)
     {
+        Console.WriteLine("Enter command option: ");
+        string option = Console.ReadLine();
         if (cmdOptions.TryGetValue(option.ToLower(), out var cmd))
         {
             while(!finished)
