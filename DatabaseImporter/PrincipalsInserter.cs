@@ -11,9 +11,8 @@ namespace DatabaseImporter
 {
     public class PrincipalsInserter : DatabaseInserter
     {
-        const int BATCHES = 1000;
+        const int BATCHES = 10000;
         const int TCONST_MAX_SIZE = 12;
-        const int ORDERING_MAX_SIZE = 2;
         const int NCONST_MAX_SIZE = 12;
         const int CATEGORY_MAX_SIZE = 20;
         const int JOB_MAX_SIZE = 290;
@@ -23,7 +22,7 @@ namespace DatabaseImporter
             new SqlMetaData("tconst", System.Data.SqlDbType.VarChar, TCONST_MAX_SIZE),
             new SqlMetaData("ordering", System.Data.SqlDbType.TinyInt),
             new SqlMetaData("nconst", System.Data.SqlDbType.VarChar, NCONST_MAX_SIZE),
-            new SqlMetaData("category", System.Data.SqlDbType.VarChar, ORDERING_MAX_SIZE),
+            new SqlMetaData("category", System.Data.SqlDbType.VarChar, CATEGORY_MAX_SIZE),
             new SqlMetaData("job", System.Data.SqlDbType.VarChar, JOB_MAX_SIZE),
             new SqlMetaData("characters", System.Data.SqlDbType.VarChar, CHARACTERS_MAX_SIZE),
 
@@ -64,7 +63,7 @@ namespace DatabaseImporter
 
                 if ((index + 1) % paramBuffer.Length == 0)
                 {
-                    SqlCommand cmd = new SqlCommand("InsertPrincipalsBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300 };
+                    SqlCommand cmd = new SqlCommand("InsertPrincipalsBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
                     SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPrincipalData", Value = paramBuffer };
                     cmd.Parameters.Add(param);
                     cmd.ExecuteNonQuery();
