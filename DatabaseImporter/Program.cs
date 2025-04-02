@@ -3,6 +3,8 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Net.Sockets;
 
+string i = "[[[gg]]]]".Trim(3, '[', ']');
+
 
 DatabaseInserter titlesInserter = new TitlesInserter();
 DatabaseInserter profInserter = new ProfessionInserter();

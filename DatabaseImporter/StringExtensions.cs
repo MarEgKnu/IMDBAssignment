@@ -98,6 +98,8 @@ namespace DatabaseImporter
         }
         public static string Trim(this string str, int count, params char[] chars)
         {
+            int removeStart = 0;
+            int removeEnd = 0;
             if(str.IsNullOrEmpty())
             {
                 return str;
@@ -111,16 +113,18 @@ namespace DatabaseImporter
             {
                 if (chars.Contains( sb[i]))
                 {
-                    sb = sb.Remove(i, 1);
+                    removeStart++;
                 }
             }
-            for (int i = sb.Length - 1; i >= 0; i++)
+            for (int i = count - 1; i >= 0; i--)
             {
-                if (chars.Contains(sb[i]))
+                if (chars.Contains(sb[sb.Length - 1 - i]))
                 {
-                    sb = sb.Remove(i, 1);
+                    removeEnd++;
                 }
             }
+            sb.Remove(0, removeStart);
+            sb.Remove(sb.Length - removeEnd - 1, removeEnd);
             return sb.ToString();
         }
     }
