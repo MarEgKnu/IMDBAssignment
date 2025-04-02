@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -94,6 +95,33 @@ namespace DatabaseImporter
                 }
             }
             throw new InvalidDataException($"The string {str} could not be parsed to a bool");
+        }
+        public static string Trim(this string str, int count, params char[] chars)
+        {
+            if(str.IsNullOrEmpty())
+            {
+                return str;
+            }
+            else if (count > str.Length)
+            {
+                throw new ArgumentException($"{nameof(count)} was larger than the length of the input string");
+            }
+            StringBuilder sb = new StringBuilder(str);
+            for(int i = 0; i < count; i++)
+            {
+                if (chars.Contains( sb[i]))
+                {
+                    sb = sb.Remove(i, 1);
+                }
+            }
+            for (int i = sb.Length - 1; i >= 0; i++)
+            {
+                if (chars.Contains(sb[i]))
+                {
+                    sb = sb.Remove(i, 1);
+                }
+            }
+            return sb.ToString();
         }
     }
 }
