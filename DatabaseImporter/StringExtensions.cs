@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -106,7 +107,8 @@ namespace DatabaseImporter
             }
             else if (count > str.Length)
             {
-                throw new ArgumentException($"{nameof(count)} was larger than the length of the input string");
+                // if the amount of chars to be trimmed is larger than the string itself, use the string length instead as count
+                count = str.Length;
             }
             StringBuilder sb = new StringBuilder(str);
             for(int i = 0; i < count; i++)
@@ -115,16 +117,31 @@ namespace DatabaseImporter
                 {
                     removeStart++;
                 }
+                else
+                {
+                    break;
+                }
             }
-            for (int i = count - 1; i >= 0; i--)
+            for (int i = str.Length - 1; i >= str.Length - count; i--)
             {
-                if (chars.Contains(sb[sb.Length - 1 - i]))
+                if (chars.Contains(sb[i]))
                 {
                     removeEnd++;
                 }
+                else
+                {
+                    break;
+                }
             }
+            if(removeStart + removeStart > str.Length)
+            {
+                throw new ArgumentException("Amount of characters to be trimmed is higher than the string length");
+            }
+            if(removeEnd > 0)
+            {
+                sb.Remove(sb.Length - removeEnd, removeEnd);
+            }          
             sb.Remove(0, removeStart);
-            sb.Remove(sb.Length - removeEnd - 1, removeEnd);
             return sb.ToString();
         }
     }
