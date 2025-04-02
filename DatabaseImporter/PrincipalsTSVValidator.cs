@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,7 @@ namespace DatabaseImporter
                 }
             }
         }
-        public override void Validate(string filePath)
+        public override void Validate(string filePath, SqlConnection connection = null)
         {
             int lineNum = 1;
             IEnumerable<string> lines = File.ReadLines(filePath).Skip(1);

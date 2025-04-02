@@ -11,7 +11,7 @@ namespace DatabaseImporter
 {
     public class PrincipalsInserter : DatabaseInserter
     {
-        const int BATCHES = 10000;
+        const int BATCHES = 1000;
         const int TCONST_MAX_SIZE = 12;
         const int NCONST_MAX_SIZE = 12;
         const int CATEGORY_MAX_SIZE = 20;
@@ -58,7 +58,7 @@ namespace DatabaseImporter
                 }
                 else
                 {
-                    record.SetString(5, fields[5]);
+                    record.SetString(5, fields[5].Trim(2, '[', ']', '\"'));
                 }
                 paramBuffer.Add(record);
 
@@ -73,10 +73,10 @@ namespace DatabaseImporter
                 
             }
             // the leftover rows
-            SqlCommand cmd2 = new SqlCommand("InsertPrincipalsBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
-            SqlParameter param2 = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPrincipalData", Value = paramBuffer };
-            cmd2.Parameters.Add(param2);
-            cmd2.ExecuteNonQuery();
+            SqlCommand restCmd = new SqlCommand("InsertPrincipalsBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
+            SqlParameter restParam = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPrincipalData", Value = paramBuffer };
+            restCmd.Parameters.Add(restParam);
+            restCmd.ExecuteNonQuery();
         }
     }
 }
