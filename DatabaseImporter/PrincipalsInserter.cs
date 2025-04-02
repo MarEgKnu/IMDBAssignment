@@ -64,10 +64,10 @@ namespace DatabaseImporter
 
                 if ((index + 1) % BATCHES == 0)
                 {
-                    SqlCommand cmd = new SqlCommand("InsertPeopleBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300 };
-                    SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPeopleData", Value = CreateDataTablePeople(segment) };
-                    cmd.Parameters.Add(param);
-                    cmd.ExecuteNonQuery();
+                    //SqlCommand cmd = new SqlCommand("InsertPeopleBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 300 };
+                    ////SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPeopleData", Value = CreateDataTablePeople(segment) };
+                    //cmd.Parameters.Add(param);
+                    //cmd.ExecuteNonQuery();
                 }
             }
         }
