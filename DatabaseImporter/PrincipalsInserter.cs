@@ -62,9 +62,9 @@ namespace DatabaseImporter
                 }
                 paramBuffer.Add(record);
 
-                if ((index + 1) % paramBuffer.Count == 0)
+                if ((index + 1) % paramBuffer.Capacity == 0)
                 {
-                    SqlCommand cmd = new SqlCommand("InsertPrincipalsBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
+                    SqlCommand cmd = new SqlCommand("InsertPrincipalsLightBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
                     SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPrincipalData", Value = paramBuffer };
                     cmd.Parameters.Add(param);
                     cmd.ExecuteNonQuery();
