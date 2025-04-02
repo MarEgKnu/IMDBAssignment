@@ -31,44 +31,52 @@ namespace DatabaseImporter
         {
             int index = -1;
             IEnumerable<string> lines = File.ReadLines(filePath).Skip(1);
-            SqlDataRecord[] paramBuffer = new SqlDataRecord[lines.Count() / BATCHES];
+            List<SqlDataRecord> paramBuffer = new List<SqlDataRecord>(lines.Count() / BATCHES);
             //string[] lines = File.ReadAllLines(filePath).Skip(1).ToArray();
             foreach (string line in lines)
             {
                 string[] fields = line.Split('\t');
+                SqlDataRecord record = new SqlDataRecord(_principalsMetaData);
                 index++;
-                paramBuffer[index] = new SqlDataRecord(_principalsMetaData);
 
-                paramBuffer[index].SetString(0, fields[0]);              
-                paramBuffer[index].SetByte(1, byte.Parse(fields[1]));
-                paramBuffer[index].SetString(2, fields[2]);
+                record.SetString(0, fields[0]);
+                record.SetByte(1, byte.Parse(fields[1]));
+                record.SetString(2, fields[2]);
 
-                paramBuffer[index].SetString(3, fields[3]);
+                record.SetString(3, fields[3]);
                 if (fields[4].IsNullString())
                 {
-                    paramBuffer[index].SetDBNull(4);
+                    record.SetDBNull(4);
                 }
                 else
                 {
-                    paramBuffer[index].SetString(4, fields[4]);
+                    record.SetString(4, fields[4]);
                 }
                 if (fields[5].IsNullString())
                 {
-                    paramBuffer[index].SetDBNull(5);
+                    record.SetDBNull(5);
                 }
                 else
                 {
-                    paramBuffer[index].SetString(5, fields[5]);
+                    record.SetString(5, fields[5]);
                 }
+                paramBuffer.Add(record);
 
-                if ((index + 1) % paramBuffer.Length == 0)
+                if ((index + 1) % paramBuffer.Count == 0)
                 {
                     SqlCommand cmd = new SqlCommand("InsertPrincipalsBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
                     SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPrincipalData", Value = paramBuffer };
                     cmd.Parameters.Add(param);
                     cmd.ExecuteNonQuery();
+                    paramBuffer.Clear();
                 }
+                
             }
+            // the leftover rows
+            SqlCommand cmd2 = new SqlCommand("InsertPrincipalsBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
+            SqlParameter param2 = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawPrincipalData", Value = paramBuffer };
+            cmd2.Parameters.Add(param2);
+            cmd2.ExecuteNonQuery();
         }
     }
 }
