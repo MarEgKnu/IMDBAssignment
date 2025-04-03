@@ -54,7 +54,7 @@ namespace DatabaseImporter
                 {
                     record.SetDBNull(2);
                 }
-                else 
+                else
                 {
                     record.SetString(2, fields[2]);
                 }
@@ -63,12 +63,18 @@ namespace DatabaseImporter
 
                 if ((index + 1) % paramBuffer.Capacity == 0)
                 {
-                    SqlCommand cmd = new SqlCommand("InsertPrincipalsLightBulk", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
+                    SqlCommand cmd = new SqlCommand("ValidateCrewExists", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
                     SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawCrewData", Value = paramBuffer };
                     cmd.Parameters.Add(param);
                     cmd.ExecuteNonQuery();
                     paramBuffer.Clear();
                 }
+            }
+            SqlCommand lastCmd = new SqlCommand("ValidateCrewExists", connection) { CommandType = CommandType.StoredProcedure, CommandTimeout = 60 };
+            SqlParameter lastParam = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawCrewData", Value = paramBuffer };
+            lastCmd.Parameters.Add(lastParam);
+            lastCmd.ExecuteNonQuery();
+            paramBuffer.Clear();
         }
         private SqlDataRecord CreateCrewRecord(string tconst, string? director, string? writer)
         {

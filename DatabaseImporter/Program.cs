@@ -23,7 +23,7 @@ Dictionary<string, Action<string, SqlConnection>> cmdOptions = new Dictionary<st
     {"insert categories", catInserter.Insert },
     {"insert principals", principalsInserter.Insert },
     {"validate principals", (string path, SqlConnection conn) => principalsValidator.Validate(path)},
-    {"validate crew exists", (string path, SqlConnection conn) => crewExistsVal.Validate(path)},
+    {"validate crew exists", crewExistsVal.Validate},
 };
 
 
