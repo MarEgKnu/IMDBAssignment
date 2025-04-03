@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace ReadFromDatabase
 {
     public class PersonWithTitles
     {
-        
+
 
 
         int id; string nconst; string primaryname; int? birthyear; int? deathyear; string[] roles; string[] titles;
@@ -34,7 +28,7 @@ namespace ReadFromDatabase
 
         public override string ToString()
         {
-            return $"{{{nameof(Id)}={Id.ToString()}, {nameof(NConst)}={NConst}, {nameof(PrimaryName)}={PrimaryName}, {nameof(BirthYear)}={BirthYear.ToString()}, {nameof(DeathYear)}={DeathYear.ToString()}, {nameof(Roles)}={string.Join(",", Roles ?? ["none"])}, {nameof(Titles)}={string.Join(",",Titles ?? ["none"])}}}";
+            return $"{{{nameof(Id)}={Id.ToString()}, {nameof(NConst)}={NConst}, {nameof(PrimaryName)}={PrimaryName}, {nameof(BirthYear)}={BirthYear.ToString()}, {nameof(DeathYear)}={DeathYear.ToString()}, {nameof(Roles)}={string.Join(",", Roles ?? ["none"])}, {nameof(Titles)}={string.Join(",", Titles ?? ["none"])}}}";
         }
     }
 }

@@ -15,7 +15,7 @@ namespace ReadFromDatabase
                 string query = "GetPersons";
                 SqlCommand cmd = new SqlCommand(query, connection);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                
+
                 cmd.Parameters.Add(new SqlParameter("@searchString", System.Data.SqlDbType.VarChar, 50)
                 {
                     Value = search
@@ -33,15 +33,16 @@ namespace ReadFromDatabase
                 });
 
                 SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read()) {
+                while (reader.Read())
+                {
                     PersonWithTitles pwt = ReadPersonWithTitles(reader);
-                    persons.Add(pwt); 
+                    persons.Add(pwt);
                 }
 
 
             }
 
-            return persons; 
+            return persons;
         }
 
         public List<TitleWithGenres> GetTitles(string search = "", int offset = 0, int fetch = 50, bool ascending = true)
@@ -88,7 +89,7 @@ namespace ReadFromDatabase
         private TitleWithGenres ReadTitleWithGenres(SqlDataReader reader)
         {
             bool primarytitlenull = reader.IsDBNull(3);
-            bool originaltitlenull = reader.IsDBNull(4); 
+            bool originaltitlenull = reader.IsDBNull(4);
             bool startyearnull = reader.IsDBNull(6);
             bool endyearnull = reader.IsDBNull(7);
             bool runtimeminutesnull = reader.IsDBNull(8);
@@ -102,7 +103,7 @@ namespace ReadFromDatabase
                 endyearnull ? null : reader.GetInt16(7),
                 runtimeminutesnull ? null : reader.GetInt32(8),
                 aggregatedgenresnull ? null : reader.GetString(9).Split("\t")
-                ); 
+                );
         }
 
         private PersonWithTitles ReadPersonWithTitles(SqlDataReader reader)
@@ -110,13 +111,13 @@ namespace ReadFromDatabase
             bool birthyearnull = reader.IsDBNull(3);
             bool deathyearnull = reader.IsDBNull(4);
             bool rolesnull = reader.IsDBNull(5);
-            bool titlesnull = reader.IsDBNull(6); 
+            bool titlesnull = reader.IsDBNull(6);
 
             int? birthyear = birthyearnull ? null : reader.GetInt16(3);
             int? deathyear = deathyearnull ? null : reader.GetInt16(4);
             string[]? roles = rolesnull ? null : reader.GetString(5).Split("\t");
             string[]? titles = titlesnull ? null : reader.GetString(6).Split("\t");
-            return new PersonWithTitles(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), birthyear, deathyear, roles!, titles!); 
+            return new PersonWithTitles(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), birthyear, deathyear, roles!, titles!);
         }
     }
 }

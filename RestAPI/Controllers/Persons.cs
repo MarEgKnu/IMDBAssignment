@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ReadFromDatabase;
 using RestAPI.Models;
-using System.Net;
 
 namespace RestAPI.Controllers
 {
@@ -14,7 +12,7 @@ namespace RestAPI.Controllers
 
         public Persons(ReadClass repo)
         {
-            _repo = repo; 
+            _repo = repo;
         }
 
         [HttpGet()]
@@ -24,7 +22,7 @@ namespace RestAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Get([FromQuery] SearchDTO dto)
         {
-            
+
             try
             {
                 if (dto == null)
@@ -35,11 +33,12 @@ namespace RestAPI.Controllers
 
                 return Ok(_repo.ReadPersonsWithTitles(dto.search, dto.offset, dto.rows, dto.ascending));
             }
-            catch (Exception ex) { 
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
-            
-            
+
+
         }
     }
 }

@@ -1,11 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DatabaseImporter
+﻿namespace DatabaseImporter
 {
     [Flags]
     enum Types
@@ -24,9 +17,9 @@ namespace DatabaseImporter
 
         public PrincipalsTSVValidator()
         {
-            for(int i = 0; i < largestFieldValues.Length; i++)
+            for (int i = 0; i < largestFieldValues.Length; i++)
             {
-                if(fieldTypes[i].HasFlag(Types.String))
+                if (fieldTypes[i].HasFlag(Types.String))
                 {
                     largestFieldValues[i] = string.Empty;
                 }
@@ -36,12 +29,12 @@ namespace DatabaseImporter
                 }
             }
         }
-        public override void Validate(string filePath, SqlConnection connection = null)
+        public override void Validate(string filePath)
         {
             int lineNum = 1;
             IEnumerable<string> lines = File.ReadLines(filePath).Skip(1);
             //string[] lines = File.ReadAllLines(filePath).Skip(1).ToArray();
-            foreach(string line in lines)
+            foreach (string line in lines)
             {
                 lineNum++;
                 string[] fields = line.Split("\t");
@@ -90,14 +83,14 @@ namespace DatabaseImporter
                         }
                     }
                 }
-      
+
             }
-            for(int fieldNum = 0; fieldNum < NUM_OF_FIELDS; fieldNum++)
+            for (int fieldNum = 0; fieldNum < NUM_OF_FIELDS; fieldNum++)
             {
                 if (fieldTypes[fieldNum].HasFlag(Types.String))
                 {
                     Console.WriteLine($"Field {fieldNames[fieldNum]} longest word is {largestFieldValues[fieldNum]} with {largestFieldValues[fieldNum].ToString().Length} characters, and Nullable = {fieldNullabillity[fieldNum]}\n");
-                }                 
+                }
                 else
                 {
                     Console.WriteLine($"Field {fieldNames[fieldNum]} largest number is {largestFieldValues[fieldNum]}, and Nullable = {fieldNullabillity[fieldNum]}\n");

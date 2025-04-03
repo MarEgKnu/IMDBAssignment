@@ -1,7 +1,5 @@
 ﻿using DatabaseImporter;
 using Microsoft.Data.SqlClient;
-using System.Data;
-using System.Net.Sockets;
 
 
 
@@ -12,7 +10,6 @@ DatabaseInserter pplInserter = new PeopleInserterSingleThread();
 DatabaseInserter catInserter = new CategoryInserter();
 DatabaseInserter principalsInserter = new PrincipalsInserter();
 DBFileValidator principalsValidator = new PrincipalsTSVValidator();
-DBFileValidator crewExistsVal = new CrewExistsValidator();
 
 Dictionary<string, Action<string, SqlConnection>> cmdOptions = new Dictionary<string, Action<string, SqlConnection>>()
 {
@@ -23,7 +20,6 @@ Dictionary<string, Action<string, SqlConnection>> cmdOptions = new Dictionary<st
     {"insert categories", catInserter.Insert },
     {"insert principals", principalsInserter.Insert },
     {"validate principals", (string path, SqlConnection conn) => principalsValidator.Validate(path)},
-    {"validate crew exists", (string path, SqlConnection conn) => crewExistsVal.Validate(path)},
 };
 
 
@@ -32,13 +28,13 @@ using (SqlConnection connection = new SqlConnection(Secret.ConnectionString))
 {
     bool finished = false;
     connection.Open();
-    while(!finished)
+    while (!finished)
     {
         Console.WriteLine("Enter command option: ");
         string option = Console.ReadLine();
         if (cmdOptions.TryGetValue(option.ToLower(), out var cmd))
         {
-            while(!finished)
+            while (!finished)
             {
                 Console.WriteLine("Command accepted, enter path:");
                 string path = Console.ReadLine();
@@ -52,7 +48,7 @@ using (SqlConnection connection = new SqlConnection(Secret.ConnectionString))
                     Console.WriteLine("Invalid path, try again");
                 }
             }
-        
+
         }
         else
         {

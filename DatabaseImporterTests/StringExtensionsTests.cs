@@ -1,12 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DatabaseImporter;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DatabaseImporter.Tests
+﻿namespace DatabaseImporter.Tests
 {
     [TestClass()]
     public class StringExtensionsTests

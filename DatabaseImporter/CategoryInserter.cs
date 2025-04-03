@@ -1,10 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DatabaseImporter
 {
@@ -14,7 +9,7 @@ namespace DatabaseImporter
         public override void Insert(string filePath, SqlConnection connection)
         {
             IEnumerable<string> lines = File.ReadLines(filePath).Skip(1);
-            foreach(string line in lines)
+            foreach (string line in lines)
             {
                 string[] fields = line.Split("\t");
 
@@ -41,7 +36,7 @@ namespace DatabaseImporter
                 cmd.ExecuteNonQuery();
                 writtenProfessions.Add(fields[3]);
 
-                
+
             }
         }
     }

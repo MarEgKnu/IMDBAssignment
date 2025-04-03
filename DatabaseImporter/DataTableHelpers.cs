@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace DatabaseImporter
 {
@@ -12,7 +7,7 @@ namespace DatabaseImporter
         public static DataTable CreateDataTableTitles(IEnumerable<string> lines)
         {
             DataTable dt = new DataTable();
-            dt.Columns.Add("tconst",  typeof(string));
+            dt.Columns.Add("tconst", typeof(string));
             dt.Columns.Add("titleType", typeof(string));
             dt.Columns.Add("primaryTitle", typeof(string));
             dt.Columns.Add("originalTitle", typeof(string));

@@ -1,10 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DatabaseImporter
 {
@@ -14,7 +9,7 @@ namespace DatabaseImporter
         public override void Insert(string filePath, SqlConnection connection)
         {
             string[] lines = File.ReadAllLines(filePath).Skip(1).ToArray();
-            for(int lineNum = 0;  lineNum < lines.Length; lineNum++)
+            for (int lineNum = 0; lineNum < lines.Length; lineNum++)
             {
                 string[] fields = lines[lineNum].Split("\t");
 

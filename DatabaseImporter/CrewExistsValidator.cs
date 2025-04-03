@@ -1,11 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.SqlClient.Server;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DatabaseImporter
 {
@@ -41,7 +35,7 @@ namespace DatabaseImporter
                 string[] writers = fields[2].Split(",");
                 if (fields[1].IsNullString())
                 {
-                    for(int i = 0; i < writers.Length; i++)
+                    for (int i = 0; i < writers.Length; i++)
                     {
                         paramBuffer.Add(CreateCrewRecord(fields[0], null, writers[i]));
                     }
@@ -63,7 +57,7 @@ namespace DatabaseImporter
                         }
                     }
                 }
-                
+
             }
             int x = 5;
         }
@@ -71,7 +65,7 @@ namespace DatabaseImporter
         {
             SqlDataRecord record = new SqlDataRecord(_crewMetaData);
             record.SetString(0, tconst);
-            if(director is not null)
+            if (director is not null)
             {
                 record.SetString(0, director);
             }

@@ -1,11 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Data.SqlClient.Server;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DatabaseImporter
 {
@@ -14,8 +9,9 @@ namespace DatabaseImporter
         private object _isCmdReadyForSegmentLock = new object();
         private object _isSegmentReadyForCmdLock = new object();
         private bool _isSegmentReadyForCmd = false;
-        private bool IsSegmentReadyForCmd { 
-            get 
+        private bool IsSegmentReadyForCmd
+        {
+            get
             {
                 lock (_isSegmentReadyForCmdLock)
                 {
@@ -29,7 +25,7 @@ namespace DatabaseImporter
                     _isSegmentReadyForCmd = value;
                 }
             }
-        
+
         }
         private bool _isCmdReadyForSegment = false;
         private bool IsCmdReadyForSegment
@@ -78,43 +74,43 @@ namespace DatabaseImporter
             {
                 //while(IsSegmentReadyForCmd)
                 //{
-                    for (int i = 0; i < DIVISOR; i++)
+                for (int i = 0; i < DIVISOR; i++)
+                {
+                    ArraySegment<string> segment;
+                    if (i == 0)
                     {
-                        ArraySegment<string> segment;
-                        if (i == 0)
-                        {
-                            segment = new ArraySegment<string>(lines, 0, itemsPerSegment);
-                        }
-                        else if (i == DIVISOR - 1)
-                        {
-                            segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment + extraItems);
-                        }
-                        else
-                        {
-                            segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment);
-                        }
-                        IEnumerable<SqlDataRecord> tempRecords = CreateDataRecordsPeople(segment);
-                        while(!IsCmdReadyForSegment)
-                        {
-                            Thread.Sleep(5); // sleep short amount of time    
-                        }
-                        lock(this)
-                        {
-                            // once it is ready, stop the waiting and pass the records to the main variable
-                            _records = tempRecords;
-                            IsSegmentReadyForCmd = true;
-                        }
-                        
+                        segment = new ArraySegment<string>(lines, 0, itemsPerSegment);
                     }
+                    else if (i == DIVISOR - 1)
+                    {
+                        segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment + extraItems);
+                    }
+                    else
+                    {
+                        segment = new ArraySegment<string>(lines, i * itemsPerSegment, itemsPerSegment);
+                    }
+                    IEnumerable<SqlDataRecord> tempRecords = CreateDataRecordsPeople(segment);
+                    while (!IsCmdReadyForSegment)
+                    {
+                        Thread.Sleep(5); // sleep short amount of time    
+                    }
+                    lock (this)
+                    {
+                        // once it is ready, stop the waiting and pass the records to the main variable
+                        _records = tempRecords;
+                        IsSegmentReadyForCmd = true;
+                    }
+
+                }
                 //}
-                
+
             });
             Task runCommand = Task.Run(() =>
             {
                 IsCmdReadyForSegment = true;
-                while(!creatingSegments.IsCompleted || _records != null)
+                while (!creatingSegments.IsCompleted || _records != null)
                 {
-                    lock(this)
+                    lock (this)
                     {
                         if (IsSegmentReadyForCmd)
                         {
@@ -128,10 +124,10 @@ namespace DatabaseImporter
                             IsCmdReadyForSegment = true;
                         }
                     }
-                    
-                    
+
+
                 }
-                
+
             });
             Task.WaitAll(creatingSegments, runCommand);
         }
@@ -143,7 +139,7 @@ namespace DatabaseImporter
             List<SqlDataRecord> records = new List<SqlDataRecord>();
             foreach (string line in lines)
             {
-                
+
                 string[] fields = line.Split('\t');
                 ValidatePeopleFields(fields);
                 SqlDataRecord record = new SqlDataRecord(_peopleMetaData);

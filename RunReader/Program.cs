@@ -3,7 +3,7 @@ using ReadFromDatabase;
 
 ReadClass rc = new();
 
-List<TitleWithGenres> list = rc.GetTitles("sej"); 
+List<TitleWithGenres> list = rc.GetTitles("sej");
 
 foreach (TitleWithGenres title in list)
 {

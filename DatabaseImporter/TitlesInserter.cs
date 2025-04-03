@@ -1,10 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DatabaseImporter
 {
@@ -36,7 +31,7 @@ namespace DatabaseImporter
                 SqlParameter param = new SqlParameter("@InData", SqlDbType.Structured) { TypeName = "dbo.RawTitleData", Value = DataTableHelpers.CreateDataTableTitles(segment) };
                 cmd.Parameters.Add(param);
                 cmd.ExecuteNonQuery();
-            }   
+            }
         }
     }
 }
