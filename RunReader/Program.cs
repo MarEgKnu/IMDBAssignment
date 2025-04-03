@@ -3,9 +3,9 @@ using ReadFromDatabase;
 
 ReadClass rc = new();
 
-List<PersonWithTitles> list = rc.ReadPersonsWithTitles("sej", 0, 50, true); 
+List<TitleWithGenres> list = rc.GetTitles("sej"); 
 
-foreach (PersonWithTitles person in list)
+foreach (TitleWithGenres title in list)
 {
-    Console.WriteLine(person);
+    Console.WriteLine(title);
 }
