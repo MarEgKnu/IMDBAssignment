@@ -101,7 +101,7 @@ namespace ReadFromDatabase
                 startyearnull ? null : reader.GetInt16(6),
                 endyearnull ? null : reader.GetInt16(7),
                 runtimeminutesnull ? null : reader.GetInt32(8),
-                aggregatedgenresnull ? null : reader.GetString(9).Split(", ")
+                aggregatedgenresnull ? null : reader.GetString(9).Split("\t")
                 ); 
         }
 
@@ -114,8 +114,8 @@ namespace ReadFromDatabase
 
             int? birthyear = birthyearnull ? null : reader.GetInt16(3);
             int? deathyear = deathyearnull ? null : reader.GetInt16(4);
-            string[]? roles = rolesnull ? null : reader.GetString(5).Split(", ");
-            string[]? titles = titlesnull ? null : reader.GetString(6).Split(", ");
+            string[]? roles = rolesnull ? null : reader.GetString(5).Split("\t");
+            string[]? titles = titlesnull ? null : reader.GetString(6).Split("\t");
             return new PersonWithTitles(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), birthyear, deathyear, roles!, titles!); 
         }
     }
