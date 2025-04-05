@@ -49,6 +49,57 @@ namespace ReadFromDatabase
 
             return persons;
         }
+
+        public PersonWithTitles AddPersonBasic(PersonWithTitles person)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionstring))
+            {
+                connection.Open();
+                string query = "AddPerson";
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new SqlParameter("@nconst", System.Data.SqlDbType.VarChar, 12)
+                {
+                    Value = person.NConst
+                });
+                cmd.Parameters.Add(new SqlParameter("@primaryName", System.Data.SqlDbType.VarChar, 120)
+                {
+                    Value = person.PrimaryName
+                });
+                cmd.Parameters.Add(new SqlParameter("@birthYear", System.Data.SqlDbType.SmallInt)
+                {
+                    Value = person.BirthYear
+                }); cmd.Parameters.Add(new SqlParameter("@deathYear", System.Data.SqlDbType.SmallInt)
+                {
+                    Value = person.DeathYear
+                });
+                if (person.Roles != null)
+                {
+                    cmd.Parameters.Add(new SqlParameter("@roles", System.Data.SqlDbType.VarChar, 500)
+                    {
+                        Value = string.Join('\t', person.Roles)
+                    });
+                }
+                if (person.Titles != null)
+                {
+                    cmd.Parameters.Add(new SqlParameter("@knownForTitles", System.Data.SqlDbType.VarChar, 500)
+                    {
+                        Value = string.Join('\t', person.Titles)
+                    });
+                }
+
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    PersonWithTitles twg = ReadPersonWithTitles(reader);
+                    return twg;
+                }
+            }
+
+            return null;
+        }
         private PersonWithTitles ReadPersonWithTitles(SqlDataReader reader)
         {
             bool birthyearnull = reader.IsDBNull(3);

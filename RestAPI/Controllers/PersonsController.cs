@@ -40,5 +40,29 @@ namespace RestAPI.Controllers
 
 
         }
+        [HttpPost()]
+        [Route("Persons")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public IActionResult PostPerson([FromBody] PersonBasicDTO dto)
+        {
+            try
+            {
+                if (dto == null)
+                {
+                    return StatusCode(406);
+                }
+                PersonWithTitles person = DTOConverter.ConvertPersonBasicDTO(dto);
+                person = _repo.AddPersonBasic(person);
+                return Created($"Persons/{person.Id}", person);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
