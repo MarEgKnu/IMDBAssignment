@@ -9,7 +9,10 @@ DatabaseInserter profInserter = new ProfessionInserter();
 DatabaseInserter pplInserter = new PeopleInserterSingleThread();
 DatabaseInserter catInserter = new CategoryInserter();
 DatabaseInserter principalsInserter = new PrincipalsInserter();
+DatabaseInserter crewInserter = new CrewInserter();
 DBFileValidator principalsValidator = new PrincipalsTSVValidator();
+DBFileValidator crewExistsVal = new CrewExistsValidator();
+DBFileValidator crewValidator = new CrewValidator();
 
 Dictionary<string, Action<string, SqlConnection>> cmdOptions = new Dictionary<string, Action<string, SqlConnection>>()
 {
@@ -20,6 +23,9 @@ Dictionary<string, Action<string, SqlConnection>> cmdOptions = new Dictionary<st
     {"insert categories", catInserter.Insert },
     {"insert principals", principalsInserter.Insert },
     {"validate principals", (string path, SqlConnection conn) => principalsValidator.Validate(path)},
+    {"validate crew exists", crewExistsVal.Validate},
+    {"insert crew", crewInserter.Insert},
+    {"validate crew", crewValidator.Validate},
 };
 
 
