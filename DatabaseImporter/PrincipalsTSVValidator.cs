@@ -1,4 +1,6 @@
-﻿namespace DatabaseImporter
+﻿using Microsoft.Data.SqlClient;
+
+namespace DatabaseImporter
 {
     [Flags]
     enum Types
@@ -29,7 +31,7 @@
                 }
             }
         }
-        public override void Validate(string filePath)
+        public override void Validate(string filePath, SqlConnection connection = null)
         {
             int lineNum = 1;
             IEnumerable<string> lines = File.ReadLines(filePath).Skip(1);

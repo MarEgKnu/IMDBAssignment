@@ -6,11 +6,11 @@ namespace RestAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class Persons : ControllerBase
+    public class PersonsController : ControllerBase
     {
-        private ReadClass _repo;
+        private IPersonRepository _repo;
 
-        public Persons(ReadClass repo)
+        public PersonsController(IPersonRepository repo)
         {
             _repo = repo;
         }
@@ -27,11 +27,11 @@ namespace RestAPI.Controllers
             {
                 if (dto == null)
                 {
-                    return Ok(_repo.ReadPersonsWithTitles());
+                    return Ok(_repo.ReadPersonsBasic());
                 }
 
 
-                return Ok(_repo.ReadPersonsWithTitles(dto.search, dto.offset, dto.rows, dto.ascending));
+                return Ok(_repo.ReadPersonsBasic(dto.search, dto.offset, dto.rows, dto.ascending));
             }
             catch (Exception ex)
             {

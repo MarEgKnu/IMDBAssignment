@@ -8,9 +8,9 @@ namespace RestAPI.Controllers
     [ApiController]
     public class TitlesController : ControllerBase
     {
-        private ReadClass _repo;
+        private ITitleRepository _repo;
 
-        public TitlesController(ReadClass repo)
+        public TitlesController(ITitleRepository repo)
         {
             _repo = repo;
         }
@@ -27,9 +27,33 @@ namespace RestAPI.Controllers
             {
                 if (dto == null)
                 {
-                    return Ok(_repo.GetTitles());
+                    return Ok(_repo.GetTitlesBasic());
                 }
-                return Ok(_repo.GetTitles(dto.search, dto.offset, dto.rows, dto.ascending));
+                return Ok(_repo.GetTitlesBasic(dto.search, dto.offset, dto.rows, dto.ascending));
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost()]
+        [Route("Titles")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public IActionResult PostTitle([FromBody] TitleBasicDTO dto)
+        {
+            try
+            {
+                if (dto == null)
+                {
+                    return StatusCode(406);
+                }
+                TitleWithGenres title = DTOConverter.ConvertTitlesBasicDTO(dto);
+                title = _repo.AddTitleBasic(title);
+                return Created($"Titles/{title.ID}" , title);
             }
 
             catch (Exception ex)

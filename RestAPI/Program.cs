@@ -3,7 +3,8 @@ using ReadFromDatabase;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton(new ReadClass());
+builder.Services.AddSingleton<IPersonRepository>(new PersonRepositoryDB());
+builder.Services.AddSingleton<ITitleRepository>(new TitleRepositoryDB());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
