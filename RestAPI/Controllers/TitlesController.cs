@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using ReadFromDatabase;
 using RestAPI.Models;
 
 namespace RestAPI.Controllers
 {
     [Route("[controller]")]
+    [EnableCors("def")]
     [ApiController]
     public class TitlesController : ControllerBase
     {

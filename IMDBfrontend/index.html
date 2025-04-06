@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="src/bootstrap.css">
+  <title>Vite + Vue</title>
+</head>
+
+<body>
+
+  <div id="app">
+    <div class="container">
+      <div class="row">
+        <div class="col-2">
+
+
+
+        </div>
+        <div class="col-6">
+          
+          <label for="sej">Søg efter titel</label>
+          <input type="text" id="sej" v-model="personSearch" class="form-control">
+          <button @click="GetPersons()">Søg!</button>
+          <br>
+          <button @click="Previous50()" :disabled="personOffset == 0">Forrige 50</button>
+          
+          <button @click="Next50()">Næste 50</button>
+
+
+          
+          <table class="table" v-show="persons.length != 0">
+            <thead>
+              <td>ID</td>
+              <td>nConst</td>
+              <td>Primært navn</td>
+              <td>Fødselsår</td>
+              <td>Dødsår</td>
+              <td>Roller</td>
+              <td>Titler</td>
+            </thead>
+            <tbody>
+              <tr v-for="person in persons">
+                <td>{{person.id}}</td>
+                <td>{{person.nConst}}</td>
+                <td>{{person.primaryName}}</td>
+                <td>{{person.birthYear}}</td>
+                <td>{{person.deathYear}}</td>
+                <td>{{person.roles}}</td>
+                <td>{{person.titles}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+
+
+
+        </div>
+        <div class="col-2">
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

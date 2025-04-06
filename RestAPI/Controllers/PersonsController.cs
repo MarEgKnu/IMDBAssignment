@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using ReadFromDatabase;
 using RestAPI.Models;
@@ -5,6 +6,7 @@ using RestAPI.Models;
 namespace RestAPI.Controllers
 {
     [ApiController]
+    [EnableCors("def")]
     [Route("[controller]")]
     public class PersonsController : ControllerBase
     {
