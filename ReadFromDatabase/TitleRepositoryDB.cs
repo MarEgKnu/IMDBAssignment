@@ -111,6 +111,91 @@ namespace ReadFromDatabase
 
             return titles;
         }
+
+        public bool DeleteTitle(int id)
+        {
+
+            using (SqlConnection connection = new SqlConnection(_connectionstring))
+            {
+                connection.Open();
+                string query = "DeleteTitle";
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new SqlParameter("@ID", System.Data.SqlDbType.Int)
+                {
+                    Value = id
+                });
+
+                int rowDeleted = cmd.ExecuteNonQuery();
+                if (rowDeleted > 0)
+                {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+        public bool UpdateTitle(int id, TitleWithGenres title)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionstring))
+            {
+                connection.Open();
+                string query = "UpdateTitle";
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new SqlParameter("@ID", System.Data.SqlDbType.Int)
+                {
+                    Value = id
+                });
+                cmd.Parameters.Add(new SqlParameter("@titleType", System.Data.SqlDbType.VarChar, 40)
+                {
+                    Value = title.TitleType
+                });
+                cmd.Parameters.Add(new SqlParameter("@primaryTitle", System.Data.SqlDbType.VarChar, 500)
+                {
+                    Value = title.PrimaryTitle
+                }); cmd.Parameters.Add(new SqlParameter("@originalTitle", System.Data.SqlDbType.VarChar, 500)
+                {
+                    Value = title.OriginalTitle
+                });
+                cmd.Parameters.Add(new SqlParameter("@isAdult", System.Data.SqlDbType.Bit)
+                {
+                    Value = title.IsAdult
+                });
+                cmd.Parameters.Add(new SqlParameter("@startYear", System.Data.SqlDbType.SmallInt)
+                {
+                    Value = title.StartYear
+                });
+                cmd.Parameters.Add(new SqlParameter("@endYear", System.Data.SqlDbType.SmallInt)
+                {
+                    Value = title.EndYear
+                });
+                cmd.Parameters.Add(new SqlParameter("@runTimeMinutes", System.Data.SqlDbType.Int)
+                {
+                    Value = title.RunTimeMinutes
+                });
+                if (title.AggregatedGenres != null)
+                {
+                    cmd.Parameters.Add(new SqlParameter("@genres", System.Data.SqlDbType.VarChar, 500)
+                    {
+                        Value = string.Join('\t', title.AggregatedGenres)
+                    });
+                }
+
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
         private TitleWithGenres ReadTitleWithGenres(SqlDataReader reader)
         {
             bool primarytitlenull = reader.IsDBNull(3);

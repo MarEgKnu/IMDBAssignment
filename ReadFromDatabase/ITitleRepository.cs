@@ -12,6 +12,10 @@ namespace ReadFromDatabase
 
         public TitleWithGenres AddTitleBasic(TitleWithGenres title);
 
+        public bool DeleteTitle(int id);
+
+        public bool UpdateTitle(int id, TitleWithGenres title);
+
 
 
     }

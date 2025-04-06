@@ -39,8 +39,8 @@ namespace RestAPI.Controllers
         }
         [HttpPost()]
         [Route("Titles")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         public IActionResult PostTitle([FromBody] TitleBasicDTO dto)
@@ -54,6 +54,59 @@ namespace RestAPI.Controllers
                 TitleWithGenres title = DTOConverter.ConvertTitlesBasicDTO(dto);
                 title = _repo.AddTitleBasic(title);
                 return Created($"Titles/{title.ID}" , title);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete()]
+        [Route("Titles")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public IActionResult DeleteTitle([FromQuery] int id)
+        {
+            try
+            {
+                bool sucess = _repo.DeleteTitle(id);
+                if (sucess)
+                {                    
+                    return NoContent();                  
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPut()]
+        [Route("Titles")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public IActionResult UpdateTitle([FromQuery] int id, [FromBody] TitleBasicDTO dto)
+        {
+            try
+            {
+                TitleWithGenres title = DTOConverter.ConvertTitlesBasicDTO(dto);
+                bool sucess = _repo.UpdateTitle(id, title);
+                if (sucess)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
 
             catch (Exception ex)
