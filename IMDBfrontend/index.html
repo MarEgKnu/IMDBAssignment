@@ -15,19 +15,21 @@
     <div class="container">
       <div class="row">
         <div class="col-2">
-
+        <button :class="none" @click="ClearResults()">Fjern resultater</button>
 
 
         </div>
-        <div class="col-6">
-          
-          <label for="sej">Søg efter titel</label>
+        <div class="col-12">
+          <h4>Der går op til et par sekunder ved søgning - vær tålmodig!</h4>
+          <label for="sej">Søg efter en person (skuespiller, crew, produktion)</label>
           <input type="text" id="sej" v-model="personSearch" class="form-control">
           <button @click="GetPersons()">Søg!</button>
+          <label>Alfabetisk resultat</label>
+          <input type="checkbox" v-model="personAscending">
           <br>
-          <button @click="Previous50()" :disabled="personOffset == 0">Forrige 50</button>
+          <button @click="Previous50()" :disabled="personOffset == 0" :class="show" class="none">Forrige 50</button>
           
-          <button @click="Next50()">Næste 50</button>
+          <button @click="Next50()" :class="show">Næste 50</button>
 
 
           
@@ -55,8 +57,97 @@
 
           </table>
 
+          <label for="sejere">Søg efter titel (film, TV-serie, andet)</label>
+          <input type="text" id="sejere" v-model="titleSearch" class="form-control">
+          <button @click="GetTitles()">Søg!</button>
+          <label>Alfabetisk resultat</label>
+          <input type="checkbox" v-model="titleAscending">
+          <br>
+          <button @click="Previous50Titles()" :disabled="titleOffset == 0" :class="showTitleButtons">Forrige 50</button>
+          
+          <button @click="Next50Titles()" :class="showTitleButtons">Næste 50</button>
+
+          <table class="table" v-show="titles.length != 0">
+            <thead>
+              <td>ID</td>
+              <td>tConst</td>
+              <td>Primært titel-navn</td>
+              <td>Originalt navn</td>
+              <td>+18</td>
+              <td>Start-år</td>
+              <td>Slut-år</td>
+              <td>Spilletid i minutter</td>
+              <td>Genrer</td>
+            </thead>
+            <tbody>
+              <tr v-for="title in titles">
+                <td>{{title.id}}</td>
+                <td>{{title.tConst}}</td>
+                <td>{{title.primaryTitle}}</td>
+                <td>{{title.originalTitle}}</td>
+                <td>{{title.isAdult == true ? "Yeppers" : "Nix"}}</td>
+                <td>{{title.startYear}}</td>
+                <td>{{title.endYear}}</td>
+                <td>{{title.runTimeMinutes}}</td>
+                <td>{{GetGenres(title.aggregatedGenres)}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+
+          <hr> 
+          <h4>Opret person</h4>
+          <h5>Roller og titler separeres med mellemrum og komma</h5>
+          <input type="text" v-model="nConst" placeholder="nConst">
+          <input type="text" v-model="primaryName" placeholder="Navn">
+          <input type="number" v-model="birthYear" placeholder="Fødselsår">
+          <input type="number" v-model="deathYear" placeholder="Dødsår">
+          <input type="text" v-model="roles" placeholder="Roller">
+          <input type="text" v-model="personTitles" placeholder="Titler">
+          <button @click="POSTPerson()" class="btn-warning">Indsend ny person</button>
+          <p class="text-danger">{{errorMessage}}</p>
+          <p class="text-success">{{responseMessage}}</p>
+
+          <hr> 
+          <h4>Opret eller opdatér titel</h4>
+          <h5>Specificér id hvis du vil opdatere</h5>
+          <h5>Roller og titler separeres med mellemrum og komma</h5>
+          <input type="number" v-model="putID" placeholder="ID">
+          <input type="text" v-model="tConst" placeholder="tConst">
+          <select v-model="titleType" @change="console.log(titleType)">
+            <option value="movie">Film</option>
+            <option value="short">Kortfilm</option>
+            <option value="tvEpisode">tv-episode</option>
+            <option value="tvMiniSeries">tv mini-serie</option>
+            <option value="tvMovie">tv-film</option>
+            <option value="tvPilot">tv-pilot</option>
+            <option value="tvSeries">tv-serie</option>
+            <option value="tvShort">tv-kortfilm</option>
+            <option value="tvSpecial">tv-special</option>
+            <option value="video">video</option>
+            <option value="videoGame">video-spil</option>
+          </select>
+          <input type="text" v-model="primaryTitle" placeholder="Primær titel">
+          <input type="text" v-model="originalTitle" placeholder="Original titel">
+          <label>Kun for voksne?</label>
+          <input type="checkbox" v-model="isAdult">
+          <br>
+          <input type="number" v-model="startYear" placeholder="Start år">
+          <input type="number" v-model="endYear" placeholder="Slut-år">
+          <input type="number" v-model="runTimeMinutes" placeholder="Køretid i minutter">
+          <input type="text" v-model="genres" placeholder="Genrer">
+          <button @click="POSTTitle()">Indsynd ny titel</button>
+          <button @click="PUTTitle()">Opdatér titel</button>
+          <p class="text-danger">{{titleErrorMessage}}</p>
+          <p class="text-success">{{titleResponseMessage}}</p>
 
 
+          <hr>
+          <h4 id="man">Slet film</h4>
+          <input type="number" v-model="deleteID" placeholder="ID for titel der skal slettes">
+          <button @click="DELETETitle()" class="btn-danger">Slet film</button>
+          <p class="text-danger">{{titleDELETEErrorMessage}}</p>
+          <p class="text-success">{{titleDELETEResponseMessage}}</p>
         </div>
         <div class="col-2">
 
@@ -70,6 +161,9 @@
 
   </div>
   <script type="module" src="/src/main.js"></script>
+  
 </body>
+
+
 
 </html>
