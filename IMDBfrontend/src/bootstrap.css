@@ -51,7 +51,7 @@ body {
   font-weight: 400;
   line-height: 1.5;
   color: #fff;
-  background: linear-gradient(90deg, rgba(0,55,36,.5) 0%, rgba(9,9,121,.5) 35%, rgba(0,212,255,.5) 100%);
+  background: linear-gradient(90deg, rgba(0, 55, 36, 0.63) 0%, rgba(9, 9, 121, 0.774) 35%, rgba(0,212,255,.5) 100%);
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -7346,6 +7346,10 @@ textarea.form-control-lg {
 
 .text-success {
   color: #198754 !important;
+  background-color: #fff;
+  width: fit-content;
+  
+  border-radius: 5px;
 }
 
 .text-info {

@@ -16,10 +16,15 @@
       <div class="row">
         <div class="col-2">
         <button :class="none" @click="ClearResults()">Fjern resultater</button>
-
+        <div v-show="loading">
+          <img src="loading.gif" style="position: fixed;">
+        </div>
 
         </div>
         <div class="col-12">
+          
+          
+
           <h4>Der går op til et par sekunder ved søgning - vær tålmodig!</h4>
           <label for="sej">Søg efter en person (skuespiller, crew, produktion)</label>
           <input type="text" id="sej" v-model="personSearch" class="form-control">
@@ -30,6 +35,7 @@
           <button @click="Previous50()" :disabled="personOffset == 0" :class="show" class="none">Forrige 50</button>
           
           <button @click="Next50()" :class="show">Næste 50</button>
+          <p class="text-success">{{personsResponseMessage}}</p>
 
 
           
@@ -67,6 +73,7 @@
           
           <button @click="Next50Titles()" :class="showTitleButtons">Næste 50</button>
 
+          <p class="text-success">{{titleResponseMessage}}</p>
           <table class="table" v-show="titles.length != 0">
             <thead>
               <td>ID</td>
@@ -89,7 +96,7 @@
                 <td>{{title.startYear}}</td>
                 <td>{{title.endYear}}</td>
                 <td>{{title.runTimeMinutes}}</td>
-                <td>{{GetGenres(title.aggregatedGenres)}}</td>
+                <td>{{GetString(title.aggregatedGenres)}}</td>
               </tr>
             </tbody>
 
@@ -114,7 +121,7 @@
           <h5>Roller og titler separeres med mellemrum og komma</h5>
           <input type="number" v-model="putID" placeholder="ID">
           <input type="text" v-model="tConst" placeholder="tConst">
-          <select v-model="titleType" @change="console.log(titleType)">
+          <select v-model="titleType">
             <option value="movie">Film</option>
             <option value="short">Kortfilm</option>
             <option value="tvEpisode">tv-episode</option>
@@ -161,6 +168,7 @@
 
   </div>
   <script type="module" src="/src/main.js"></script>
+  
   
 </body>
 
