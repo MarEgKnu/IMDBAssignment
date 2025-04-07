@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using ReadFromDatabase;
-using RestAPI.Models;
 
 namespace RestAPI.Controllers
 {
     [ApiController]
     [EnableCors("def")]
     [Route("[controller]")]
-    public class GenresController : ControllerBase
+    public class ProfessionController : ControllerBase
     {
-        private IGenreRepository _repo;
+        private IProfessionRepository _repo;
 
-        public GenresController(IGenreRepository repo)
+        public ProfessionController(IProfessionRepository repo)
         {
             _repo = repo;
         }
@@ -20,14 +19,15 @@ namespace RestAPI.Controllers
         [HttpGet()]
         [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Get(byte id)
         {
 
             try
             {
-                Genre? result = _repo.GetByID(id);
-                if(result == null)
+                Profession? result = _repo.GetByID(id);
+                if (result == null)
                 {
                     return NotFound();
                 }
@@ -48,7 +48,7 @@ namespace RestAPI.Controllers
 
             try
             {
-                List<Genre> result = _repo.GetAll();
+                List<Profession> result = _repo.GetAll();
                 if (result.Count == 0)
                 {
                     return NoContent();

@@ -4,25 +4,24 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ReadFromDatabase
 {
-    public class GenreRepositoryDB : IGenreRepository
+    public class ProfessionRepositoryDB : IProfessionRepository
     {
         private string _connectionstring = DatabaseImporter.Secret.ConnectionString;
-        public List<Genre> GetAll()
+        public List<Profession> GetAll()
         {
-            List<Genre> genres = new List<Genre>();
+            List<Profession> professions = new List<Profession>();
 
             using (SqlConnection connection = new SqlConnection(_connectionstring))
             {
                 connection.Open();
-                string query = "SELECT * FROM GenreView";
+                string query = "SELECT * FROM ProfessionView";
                 SqlCommand cmd = new SqlCommand(query, connection);
-                
-                cmd.CommandType = System.Data.CommandType.Text;
+
+                cmd.CommandType = CommandType.Text;
                 cmd.Prepare();
 
 
@@ -30,23 +29,22 @@ namespace ReadFromDatabase
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Genre genre = CreateGenre(reader);
-                    genres.Add(genre);
+                    Profession profession = CreateProfession(reader);
+                    professions.Add(profession);
                 }
             }
 
-            return genres;
+            return professions;
         }
 
-        public Genre? GetByID(byte id)
+        public Profession? GetByID(byte id)
         {
-
             using (SqlConnection connection = new SqlConnection(_connectionstring))
             {
                 connection.Open();
-                string query = "SELECT * FROM GetGenreByID(@ID)";
+                string query = "SELECT * FROM GetProfessionByID(@ID)";
                 SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.CommandType = CommandType.Text;
                 cmd.Parameters.Add(new SqlParameter("@ID", SqlDbType.TinyInt)
                 {
                     Value = id
@@ -58,17 +56,17 @@ namespace ReadFromDatabase
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    Genre genre = CreateGenre(reader);
-                    return genre;
+                    Profession profession = CreateProfession(reader);
+                    return profession;
                 }
             }
 
             return null;
         }
-        
-        private Genre CreateGenre(SqlDataReader reader)
+
+        private Profession CreateProfession(SqlDataReader reader)
         {
-            return new Genre(reader.GetByte(0), reader.GetString(1));
+            return new Profession(reader.GetByte(0), reader.GetString(1));
         }
     }
 }
