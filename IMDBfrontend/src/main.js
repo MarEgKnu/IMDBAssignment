@@ -205,7 +205,15 @@ let app = createApp({
             if (this.genres != null) {
                 let someGenres = toRaw(this.genres);
                 var stringArr = someGenres.split(", ");
-
+                
+                for (let index = 0; index < stringArr.length; index++) {
+                    const element = stringArr[index];
+                    if (!this.acceptedGenres.includes(element)) {
+                        this.titleErrorMessage = "Du har skrevet genrer, som ikke er godkendt - kig evt. i konsol for accepterede genrer";
+                        console.log(this.acceptedGenres);
+                        return;
+                    }
+                }
             }
             let title = { tconst: this.tConst, titleType: this.titleType, primaryTitle: this.primaryTitle, originalTitle: this.originalTitle, isAdult: this.isAdult, startYear: this.startYear, endYear: this.endYear, runTimeMinutes: this.runTimeMinutes, Genres: stringArr ?? null };
             const response = await axios.post(baseTitleURL, title).then((response) => {
