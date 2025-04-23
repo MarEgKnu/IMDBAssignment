@@ -56,8 +56,8 @@
                 <td>{{person.primaryName}}</td>
                 <td>{{person.birthYear}}</td>
                 <td>{{person.deathYear}}</td>
-                <td>{{person.roles}}</td>
-                <td>{{person.titles}}</td>
+                <td>{{person.roles == "Ukendt" ? "Ukendt" :GetString(person.roles)}}</td>
+                <td>{{person.titles == "Ukendt" ? "Ukendt" : GetString(person.titles)}}</td>
               </tr>
             </tbody>
 
